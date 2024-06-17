@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+You-Boo
+{% endblock title %}
+{% block others %}
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+{% endblock others %}
+
+{% block content %}
+{% include "partials/navbar.html" %}
+<main class="container-fluid">
+    <section class="header-section" style="background-image: url('{% static "arcane.webp" %}')">
+        <div class="content">
+            <h2>Аркейн</h2>
+            <p>
+                История разворачивается в утопическом краю Пилтовер и жестоком подземном мире Заун и рассказывает о становлении двух легендарных чемпионов Лиги и о той силе, что разведёт их по разные стороны баррикад.
+            </p>
+            <div>
+                <button>
+                    <ion-icon name="play"></ion-icon>
+                    <span>Смотреть</span>
+                </button>
+                <button>
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    <span>Подробнее</span>
+                </button>
+            </div>
+        </div>
+    </section> 
+
+    <div class="movie-section-container">
+        <section class="movie-section">
+            <div class="container">
+                <h2>Популярное сегодня</h2>
+                <div class="movie-list">
+                    {% for movie in popular_movies %}
+                    <a href="{% url "core:show_det" movie_id=movie.uuid %}" class="text-decoration-none">
+                        <div class="movie-item">
+                            <img src="{{ movie.flyer.url }}" alt="">
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {% for category, movies in category_movies.items %}
+        <section class="movie-section">
+            <div class="container">
+                <h2>{{ category }}</h2>
+                <div class="movie-list">
+                    {% for movie in movies %}
+                    <a href="{% url "core:show_det" movie_id=movie.uuid %}" class="text-decoration-none">
+                        <div class="movie-item">
+                            <img src="{{ movie.flyer.url }}" alt="">
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endfor %}
+
+    </div>
+</main>
+{% endblock content %}

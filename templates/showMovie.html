@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+You-Boo - Movie
+{% endblock title %}
+
+{% block others %}
+<!-- Video.js CSS -->
+<link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+<style>
+    .main-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Занимает всю высоту экрана */
+        background-color: #000; /* Черный фон */
+    }
+
+    #my-video {
+        width: 100%; /* Занимает всю доступную ширину */
+        height: auto; /* Подстраивается под соотношение сторон видео */
+    }
+</style>
+{% endblock others %}
+
+{% block content %}
+    {% include 'partials/navbar.html' %}
+    <main class="main-content">
+        <script id="movie_data" type="application/json">{{ movie_data|json_script:"movie_data" }}</script>
+        
+        <!-- Video.js Player -->
+        <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" poster="MY_VIDEO_POSTER.jpg" data-setup='{}'>
+            <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a web browser that
+                <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+            </p>
+        </video>
+    </main>
+    <!-- Video.js JavaScript -->
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script>
+        const videoEl = document.querySelector('#my-video');
+        const movie_data = JSON.parse(document.getElementById('movie_data').textContent);
+
+        const url = new URL(window.location.href);
+        const video_param = url.searchParams.get("epi") ? parseInt(url.searchParams.get("epi")) : 0;
+
+        if (video_param >= 0 && video_param < movie_data.length) {
+            const videoSrc = movie_data[video_param].file;
+            console.log('Video source:', videoSrc);
+            const sourceEl = document.createElement('source');
+            sourceEl.setAttribute('src', videoSrc);
+            sourceEl.setAttribute('type', 'video/mp4');
+            videoEl.appendChild(sourceEl);
+        } else {
+            console.error('Invalid video parameter:', video_param);
+        }
+
+        console.log('Movie data:', movie_data);
+        videojs(videoEl);
+    </script>
+{% endblock content %}

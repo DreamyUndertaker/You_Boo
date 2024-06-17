@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    You-Boo - Регистрация
+{% endblock title %}
+
+{% block other %}
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+{% endblock other %}
+
+{% block content %}
+    {% include '../partials/navbar.html' %}
+    <header class="min-h-screen w-full bg-black bg-opacity-75 showcase border-gray-600 border-b-8 flex justify-center bg-no-repeat" style="background-image: url('{% static 'youback.jpg' %}');">
+        <div class="z-10 py-32 md:py-0 text-gray-100 form-container2">
+            <form method='POST' class="bg-black bg-opacity-70 py-8 px-6 rounded-md">
+                <h1 class="text-4xl font-semibold">Регистрация</h1>
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="form-error">
+                        {% for field, error in form.errors.items %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="my-4">
+                    <label for="id_email" class="text-lg font-medium mb-2">Почта</label>
+                    <input type="email" name="email" id="id_email" placeholder="Ваша почта" class="p-2 bg-gray-200 rounded-sm text-gray-900 outline-none block w-full">
+                </div>
+                <div class="my-4">
+                    <label for="id_password1" class="text-lg font-medium mb-2">Пароль</label>
+                    <input type="password" name="password1" id="id_password1" placeholder="Пароль" class="p-2 bg-gray-200 rounded-sm text-gray-900 outline-none block w-full">
+                </div>
+                <div class="my-4">
+                    <label for="id_password2" class="text-lg font-medium mb-2">Повторите пароль</label>
+                    <input type="password" name="password2" id="id_password2" placeholder="Повторите пароль" class="p-2 bg-gray-200 rounded-sm text-gray-900 outline-none block w-full">
+                </div>
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+                {% endif %}
+                <div class="flex justify-center items-center my-6">
+                    <button type="submit" class="py-2 px-4 bg-primary_red text-gray-100 font-medium text-lg rounded-md">Зарегистрироваться</button>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm">Уже зарегистрированы? <a href="{% url 'account_login' %}" class="text-blue-600"> Войти</a></p>
+                </div>
+            </form>
+        </div>
+    </header>
+{% endblock content %}

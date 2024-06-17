@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    You-Boo - Авторизация
+{% endblock title %}
+
+{% block others %}
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+{% endblock others %}
+
+{% block content %}
+    {% include '../partials/navbar.html' with AUTH='false' %}
+    <header class="min-h-screen w-full bg-black bg-opacity-75 showcase border-gray-600 border-b-8 flex justify-center bg-no-repeat" style="background-image: url('{% static 'youback.jpg' %}');">
+        <div class="z-10 py-32 md:py-0 text-gray-100 form-container">
+            <form method='POST' class="bg-black bg-opacity-70 py-8 px-6 rounded-md">
+                <h1 class="text-4xl font-semibold">Вход</h1>
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="form-error">
+                        {% for field, error in form.errors.items %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div>
+                    <label for="id_login" class="text-lg font-medium mb-3">Почта</label>
+                    <input type="email" name="login" id="id_login" placeholder="Ваша почта" class="p-2 bg-gray-200 rounded-sm text-gray-900 outline-none block w-full">
+                </div>
+                <div class='my-3'>
+                    <label for="id_password" class="text-lg font-medium mb-3">Пароль</label>
+                    <input type="password" name="password" id="id_password" placeholder="Пароль" class="p-2 bg-gray-200 rounded-sm text-gray-900 outline-none block w-full">
+                </div>
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+                {% endif %}
+                <div class="flex justify-center items-center">
+                    <button type="submit" class="py-2 px-4 bg-primary_red text-gray-100 font-medium text-lg rounded-md">Войти</button>
+                </div>
+                <div class="text-center my-4">
+                    <p>Не авторизованы? <a href="{% url 'account_signup' %}" class="text-blue-600"> Зарегистрироваться</a></p>
+                </div>
+            </form>
+        </div>
+    </header>
+{% endblock content %}

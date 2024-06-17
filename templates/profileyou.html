@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+You-Boo - Профиль
+{% endblock title %}
+
+{% block content %}
+<style>
+    .profile-section {
+        background-image: url("{% static 'youbooback.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 15px;
+        position: relative;
+    }
+
+    .profile-section::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        min-height: 100%;
+        z-index: 1;
+        background: rgba(0, 0, 0, 0.6);
+        box-shadow: inset 120px 100px 250px #000000, inset -120px -100px 250px #000000;
+    }
+
+    .profile-card {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        max-width: 500px;
+        width: 100%;
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-control {
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 5px;
+        color: white;
+    }
+
+    .form-control:focus {
+        outline: none;
+        box-shadow: none;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #E50914;
+        color: white;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #a0060e;
+    }
+</style>
+
+{% include 'partials/navbar2.html' %}
+
+<div class="profile-section">
+    <div class="profile-card">
+        <h2 class="text-center mb-4">Профиль пользователя</h2>
+        <form method="post" action="{% url 'core:update_user_info' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_first_name">Имя:</label>
+                <input type="text" class="form-control" id="id_first_name" name="first_name" value="{{ request.user.first_name }}">
+                
+                <label for="id_last_name">Фамилия:</label>
+                <input type="text" class="form-control" id="id_last_name" name="last_name" value="{{ request.user.last_name }}">
+                
+                <label for="id_image">Изображение:</label>
+                <input type="file" class="form-control" id="id_image" name="avatar">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+        </form>
+        {% if avatar_form.errors %}
+            <div class="alert alert-danger">
+                {% for field in avatar_form %}
+                    {% for error in field.errors %}
+                        <strong>{{ error|escape }}</strong><br>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

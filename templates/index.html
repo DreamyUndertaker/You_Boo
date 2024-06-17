@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    You-Boo - Главная
+{% endblock title %}
+
+{% block others %}
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+{% endblock others %}
+
+{% block content %}
+{% include "partials/navbar.html" %}
+<header class="min-h-screen bg-black bg-opacity-75 showcase border-gray-600 border-b-8 flex items-center justify-center bg-no-repeat" style="background-image: url('{% static 'youback.jpg' %}');">
+    <div class="z-10 text-gray-100 text-center flex flex-col items-center py-20">
+        <div class="text-container">
+            <h1 class="font-semibold text-4xl md:text-5xl w-10/12 md:w-3/4">
+                Неограниченное количество фильмов, телешоу и многого другого.
+            </h1>
+            <h3 class="text-xl md:text-xl py-5">
+                Смотрите где угодно. Отмените в любое время.
+            </h3>
+            <h4 class="text-sm md:text-lg pb-3">
+                Готовы смотреть? Введите свой адрес электронной почты, чтобы создать или перезапустить подписку.
+            </h4>
+
+            <div class="w-full flex justify-center">
+                <div class="flex justify-center items-center w-full md:w-10/12">
+                    <input type="email" placeholder="Ваш email" class="email-input md:py-5 py-4 px-2 placeholder-gray-500 rounded-tl-sm rounded-bl-sm outline-none text-gray-900 bg-gray-50 block w-8/12 md:w-3/4">
+                    <a href='{% url "account_signup" %}' class='md:w-1/4'>
+                        <button class="bg-primary_red font-medium md:font-normal flex justify-center items-center py-4 px-2 md:px-0 rounded-br-sm rounded-tr-sm md:text-2xl">
+                            <span>Создать аккаунт</span>
+                            <ion-icon name="chevron-forward-outline" class="text-2xl"></ion-icon>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="section-container flex flex-col md:flex-row items-center border-gray-900 border-b-8 min-h-70vh">
+    <div class='md:w-1/2 flex justify-center items-center'>
+        <img src="{% static 'tv.png' %}" class="w-8/12" alt="Просмотр по телевизору">
+    </div>
+    <div class="md:w-1/2 flex flex-col justify-center text-center md:text-left p-5 md:p-10">
+        <h2 class="md:text-5xl text-4xl font-semibold mb-4">
+            Наслаждайтесь просмотром по телевизору.
+        </h2>
+        <h5 class="md:text-xl text-lg">
+            Смотрите на телевизорах Smart TV, Playstation, Xbox, Chromecast, Apple TV, проигрывателях Blu-ray и других устройствах.
+        </h5>
+    </div>
+</section>
+
+<section class="section-container-reverse flex flex-col md:flex-row items-center border-gray-900 border-b-8 min-h-70vh">
+    <div class="md:w-1/2 flex justify-center items-center">
+        <img src="{% static 'mobile-0819.jpg' %}" class="w-8/12" alt="Просмотр на мобильных устройствах">
+    </div>
+    <div class="md:w-1/2 flex flex-col justify-center text-center md:text-left p-5 md:p-10">
+        <h2 class="md:text-5xl text-4xl font-semibold mb-4">
+            Загружайте свои шоу, чтобы смотреть их в автономном режиме.
+        </h2>
+        <h5 class="md:text-xl text-lg">
+            Легко сохраняйте избранное, и вам всегда будет что посмотреть.
+        </h5>
+    </div>
+</section>
+
+<section class="section-container flex flex-col md:flex-row items-center border-gray-900 border-b-8 min-h-70vh">
+    <div class='md:w-1/2 flex justify-center items-center'>
+        <img src="{% static 'You-Boo_kid.png' %}" class="w-8/12" alt="Просмотр по телевизору">
+    </div>
+    <div class="md:w-1/2 flex flex-col justify-center text-center md:text-left p-5 md:p-10">
+        <h2 class="md:text-5xl text-4xl font-semibold mb-4">
+            Создавайте профили для детей.
+        </h2>
+        <h5 class="md:text-xl text-lg">
+            Отправляйте детей в приключения с их любимыми героями в пространстве, созданном специально для них, — бесплатно, если у вас есть подписка.
+        </h5>
+    </div>
+</section>
+
+<footer class="px-5 py-10 footer-container">
+    <ul class="flex justify-between items-center w-full">
+        <li>&copy; 2024</li>
+        <li>You-Boo</li>
+        <li>Мурадян О.</li>
+    </ul>
+</footer>
+{% endblock content %}

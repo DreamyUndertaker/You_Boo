@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+
+    {% block others %}
+    {% endblock others %}
+</head>
+<body class='bg-dark text-light font-weight-normal'>
+
+    {% block content %}
+    {% endblock content %}
+
+    <script>
+        const nav = document.querySelector('nav')
+
+        document.addEventListener("scroll", e => {
+            if (scrollY > 100) {
+                nav.classList.add('bg-secondary')
+            } else {
+                nav.classList.remove('bg-secondary')
+            }
+        })
+    </script>
+    
+</body>
+</html>

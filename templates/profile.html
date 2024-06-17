@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+You-Boo - Профиль
+{% endblock title %}
+
+{% block content %}
+<style>
+    .profile-section {
+        background-image: url("{% static 'youbooback.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 0 15px;
+        padding-top: 80px; /* Отступ сверху для расположения ниже navbar */
+        position: relative;
+    }
+
+    .profile-section::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .profile-card1, .content-card1 {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
+        margin-bottom: 6%;
+    }
+
+    .profile-card1 {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .content-card1 {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .profile-card1 h2, .profile-card1 label, .content-card1 h3, .content-card1 p {
+        color: white;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .profile-info {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .form-control {
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 5px;
+        color: white;
+    }
+
+    .btn {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #E50914;
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        width: 100%;
+        max-width: 200px; /* Максимальная ширина кнопки */
+        margin-top: 10px;
+        z-index: 3; /* Кнопка на переднем плане */
+        position: relative; /* Положение относительно родителя */
+    }
+
+    .btn:hover {
+        background-color: #a0060e;
+    }
+
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .profile-card1 .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .clapperboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .clapperboard .line {
+        width: 100%;
+        height: 10px;
+        background: white;
+        margin: 5px 0;
+    }
+
+    .content-section {
+        margin-top: 20px;
+    }
+
+    .favorites, .subscription-management {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .profile-card1 a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .profile-card1 a:hover {
+        text-decoration: underline;
+    }
+
+    .top-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0; /* Удаление нижнего отступа */
+        margin-top: 0; /* Удаление верхнего отступа */
+    }
+
+    .top-buttons a {
+        padding: 10px 20px;
+        background-color: #E50914;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        width: 48%;
+        margin: 0; /* Удаление внешних отступов */
+    }
+
+    .top-buttons a:hover {
+        background-color: #a0060e;
+    }
+
+    .transparent-block {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        background-color: transparent; /* Прозрачный фон */
+    }
+
+    .profile-card-container {
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 0; /* Удаление нижнего отступа */
+        margin-top: 0; /* Удаление верхнего отступа */
+    }
+
+    .content-card-container {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-top: 0; /* Удаление верхнего отступа */
+        margin-left: 20px; /* Пробел между двумя блоками */
+        margin-top: -10px; /* Поднятие второго блока. Уменьшите это значение для опускания второго блока */
+    }
+
+    .content-card1 {
+        width: 100%;
+        height: 100%;
+    }
+
+    .profile-card-container, .content-card-container {
+        margin-top: 2%; /* Выравнивание верхушек блоков */
+    }
+</style>
+
+{% include 'partials/navbar2.html' %}
+
+<div class="profile-section">
+    <div class="transparent-block">
+        <div class="profile-card-container">
+            <div class="profile-card1">
+                <div class="clapperboard">
+                    <!-- Блок для отображения аватара пользователя -->
+                    <div class="profile-avatar">
+                        <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'avataryou.png' %}{% endif %}" class="profile-avatar">
+                    </div>
+                    
+                    <!-- Остальная информация о пользователе -->
+                    <h2>Профиль пользователя</h2>
+                    <div class="profile-info">
+                        <label for="first_name">Имя:</label>
+                        <div class="form-control">{{ request.user.first_name }}</div>
+                    </div>
+                    <div class="profile-info">
+                        <label for="last_name">Фамилия:</label>
+                        <div class="form-control">{{ request.user.last_name }}</div>
+                    </div>
+                    <div class="profile-info">
+                        <label for="subscription">Подписка:</label>
+                        <div class="form-control">{% if request.user.subscription %}{{ request.user.subscription }}{% else %}Не приобретена{% endif %}</div>
+                    </div>
+                    <div class="profile-info">
+                        <label for="birth_date">Дата рождения:</label>
+                        <div class="form-control">{{ request.user.birth_date }}</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'core:profileyou' %}" class="btn btn-primary btn-block">Изменить данные</a>        
+        </div>
+
+        <div class="content-card-container">
+            <div class="content-card1">
+                <div class="top-buttons">
+                    <a href="#" class="favorites-btn">Избранное</a>
+                    <a href="#" class="subscription-btn">Управление подпиской</a>
+                </div>
+                <!-- Новый блок для размещения дополнительного контента -->
+                <div class="additional-content">
+                    {% block additional_content %}
+                        <!-- Здесь можно разместить дополнительный контент -->
+                    {% endblock additional_content %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

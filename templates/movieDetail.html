@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    You-Boo - {{ movie.title }}
+{% endblock title %}
+
+{% block others %}
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+<style>
+    /* Стили оценок */
+    .rating {
+        display: inline-block;
+    }
+
+    .rating svg {
+        width: 250px;
+        height: 50px;
+    }
+
+    .rating polygon {
+        fill: lightgray;
+        cursor: pointer;
+        transition: fill 500ms;
+    }
+
+    .rating polygon:hover,
+    .rating polygon:hover ~ polygon {
+        fill: white;
+    }
+
+    .rating polygon.active {
+        fill: gold;
+    }
+
+    /* Стили для кнопек */
+    .button-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .button-container button {
+        margin-right: 10px; /* Пространство между кнопками */
+    }
+
+    /* Стили для кнопки "В избранное" */
+    #favorite-button {
+        background-color: #ffffff; /* Белый фон кнопки */
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        color: #000; /* Цвет сердечка, когда оно не активно */
+        padding: 10px 15px; /* Поля внутри кнопки */
+    }
+
+    #favorite-button.active ion-icon[name="heart"] {
+        color: red; /* Цвет сердечка, когда оно активно */
+    }
+
+    /* Стили для блока отзывов */
+    .review {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: transparent; /* Убираем белый фон */
+        border-color: #fff; /* Белая обводка */
+    }
+
+    .review p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .review strong {
+        font-weight: bold;
+    }
+
+    .review em {
+        color: #888;
+    }
+
+    /* Стили для формы отзывов */
+    .review-form {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+
+    .review-form textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        resize: vertical; /* Разрешаем вертикальное изменение размера */
+    }
+
+    .review-form button {
+        background-color: #FF0000; /* Красный фон кнопки */
+        color: white; /* Цвет текста */
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    .review-form button:hover {
+        background-color: #CC0000; /* Цвет фона кнопки при наведении */
+    }
+</style>
+{% endblock others %}
+
+{% block content %}
+    {% include 'partials/navbar.html' %}
+    <main class="container-fluid">
+        <section class="header-section"
+            style="background-image: url('{{ movie.flyer.url }}'); background-size: cover; background-position: center;">
+            <div class="content">
+                <h2>{{ movie.title }}</h2>
+                <p>{{ movie.description }}</p>
+                <div class="button-container">
+                    <a href="{% url 'core:play' movie_id=movie.uuid %}">
+                        <button>
+                            <ion-icon name="play"></ion-icon>
+                            <span>Смотреть</span>
+                        </button>
+                    </a>
+                    <!-- Добавляем кнопку "В избранное" -->
+                    <button id="favorite-button" data-movie-id="{{ movie.uuid }}">
+                        <ion-icon name="heart"></ion-icon>
+                        <span>В избранное</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-primary_black minh flex justify-center py-10 movie-detail-section">
+            <div class="p-8 w-10/12 relative">
+                <h2 class="text-gray-200 text-3xl font-medium">Описание</h2>
+                <p class="text-gray-100 text-lg">{{ movie.description }}</p>
+
+                <div class="my-8">
+                    <h2 class="text-gray-200 text-3xl font-medium">Оценить фильм</h2>
+                    <!-- Добавим атрибут data-movie-id для хранения идентификатора фильма -->
+                    <div class="rating" data-value="{{ user_rating }}" data-movie-id="{{ movie.uuid }}"></div>
+                    <!-- Вывод среднего рейтинга -->
+                    <p>Средний рейтинг: <span id="average-rating">{{ average_rating }}</span></p>
+                </div>
+
+                <div>
+                    <h2 class="text-gray-200 text-3xl font-medium">Изображения</h2>
+                    <div class="flex flex-wrap">
+                        {% for image in movie.images.all %}
+                        <img src="{{ image.image.url }}" alt="{{ image.alt }}" class="m-2" width="200">
+                        {% empty %}
+                        <p>Нет доступных изображений</p>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'core:images' movie_id=movie.uuid %}">Посмотреть остальные изображения</a>
+                </div>
+
+                {% if movie.type == 'seasonal' %}
+                <div class="my-8">
+                    <h2 class="text-gray-200 text-3xl font-medium">Серия</h2>
+                    {% for episode in movie.videos.all %}
+                    <h3 class="text-lg">
+                        <a href="{% url 'core:play' movie_id=movie.uuid %}?epi={{ forloop.counter0 }}">
+                            {{ forloop.counter }} - {{ episode.title }}
+                        </a>
+                    </h3>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="my-8">
+                    <h2 class="text-gray-200 text-3xl font-medium">Отзывы</h2>
+                    <div class="reviews">
+                        {% for review in reviews %}
+                        <div class="review">
+                            <p><strong>{{ review.user.username }}</strong>: {{ review.text }}</p>
+                            <p><em>{{ review.created_at }}</em></p>
+                        </div>
+                        {% empty %}
+                        <p>Пока нет отзывов. Будьте первым!</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="my-8">
+                    <h2 class="text-gray-200 text-3xl font-medium">Оставить отзыв</h2>
+                    <form class="review-form" method="post" action="{% url 'core:add_review' movie_id=movie.uuid %}">
+                        {% csrf_token %}
+                        {{ review_form.as_p }}
+                        <button type="submit">Оставить отзыв</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+        // Функция для кнопки "В избранное"
+        document.addEventListener('DOMContentLoaded', function() {
+            const favoriteButton = document.getElementById('favorite-button');
+            
+            // Обработчик для кнопки "В избранное"
+            favoriteButton.addEventListener('click', function() {
+                const movieId = this.dataset.movieId;
+                const isFavorite = this.classList.contains('active');
+    
+                $.post(`/toggle_favorite/${movieId}/`, {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }, function(response) {
+                    if (response.status === 'added') {
+                        alert('Фильм добавлен в избранное!');
+                        favoriteButton.classList.add('active');
+                        document.querySelector('#favorite-button ion-icon').style.color = 'red';
+                    } else if (response.status === 'removed') {
+                        alert('Фильм удален из избранного!');
+                        favoriteButton.classList.remove('active');
+                        document.querySelector('#favorite-button ion-icon').style.color = '';
+                    }
+                });
+                
+                // Изменение состояния кнопки "В избранное"
+                if (isFavorite) {
+                    favoriteButton.classList.remove('active');
+                    document.querySelector('#favorite-button ion-icon').style.color = ''; // Сбрасываем цвет
+                } else {
+                    favoriteButton.classList.add('active');
+                    document.querySelector('#favorite-button ion-icon').style.color = 'red'; // Устанавливаем красный цвет
+                }
+            });
+
+        // Класс для оценки фильма
+        class Rating {
+            constructor(dom) {
+                dom.innerHTML = '<svg width="250" height="50"></svg>';
+                this.svg = dom.querySelector('svg');
+                for (let i = 0; i < 5; i++)
+                    this.svg.innerHTML += `<polygon data-value="${i+1}"
+                        transform="translate(${i*50},0)"
+                        points="25,0 31,18 50,18 35,29 41,47 25,37 9,47 15,29 0,18 19,18">`;
+                this.svg.onclick = e => this.change(e);
+                this.render();
+            }
+
+            change(e) {
+                let value = e.target.dataset.value;
+                if (value) {
+                    this.svg.parentNode.dataset.value = value;
+                    const movieId = this.svg.parentNode.dataset.movieId; // Получаем идентификатор фильма
+                    $.post(`/add_rating/${movieId}/`, { // Отправляем AJAX-запрос на сервер
+                        stars: value,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    }, (data) => {
+                        // Обновляем средний рейтинг после получения ответа от сервера
+                        document.getElementById('average-rating').innerText = data.average_rating;
+                    });
+                    this.render();
+                }
+            }
+
+            render() {
+                this.svg.querySelectorAll('polygon').forEach(star => {
+                    let on = +this.svg.parentNode.dataset.value >= +star.dataset.value;
+                    star.classList.toggle('active', on);
+                });
+            }
+        }
+
+        // Инициализация всех элементов с классом "rating"
+        document.querySelectorAll('.rating').forEach(dom => new Rating(dom));
+
+        // Отправка отзыва
+        const reviewForm = document.querySelector('.review-form');
+        reviewForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(reviewForm);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            
+            fetch(reviewForm.action, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Обработка ответа от сервера
+                if (data.success) {
+                    alert('Отзыв успешно добавлен!');
+                    // Опционально: обновление списка отзывов без перезагрузки страницы
+                    const reviewContainer = document.querySelector('.my-8 .reviews');
+                    const newReview = document.createElement('div');
+                    newReview.classList.add('review');
+                    newReview.innerHTML = `
+                        <p><strong>${data.username}</strong>: ${data.text}</p>
+                        <p><em>${data.created_at}</em></p>
+                    `;
+                    reviewContainer.prepend(newReview);
+                    reviewForm.reset(); // Очистка формы после отправки
+                } else {
+                    alert('Что-то пошло не так. Пожалуйста, попробуйте снова.');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке отзыва.');
+            });
+        });
+    });
+    </script>
+
+{% endblock content %}
+
